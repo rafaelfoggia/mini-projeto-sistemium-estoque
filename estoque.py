@@ -39,6 +39,10 @@ class Estoque:
 
     # Altera a quantidade de um produto
     def alterar_quantidade(self, nome, nova_quantidade):
+            
+            if nova_quantidade < 0:
+                return False
+            
         # Procura o produto
             produto = self.buscar_produto(nome)
 

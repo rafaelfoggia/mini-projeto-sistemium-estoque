@@ -81,12 +81,15 @@ while True:
 
         try:
 
-            # Recebe a nova quantidade
             nova_quantidade = int(
-                input('Nova quantidade: ')
+                input("Nova quantidade: ")
             )
 
-            # Tenta atualizar a quantidade do produto
+            # Impede quantidades negativas
+            if nova_quantidade < 0:
+                print("Quantidade inválida!")
+                continue
+
             if estoque.alterar_quantidade(
                 nome,
                 nova_quantidade
