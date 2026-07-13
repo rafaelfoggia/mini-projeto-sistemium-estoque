@@ -1,138 +1,130 @@
-# Importa a classe Produto do arquivo produto.py
-from produto import Produto
-
-# Importa a classe Estoque do arquivo estoque.py
 from estoque import Estoque
+import servico_produto
 
-# Cria um estoque vazio para armazenar os produtos
 estoque = Estoque()
 
-# Loop principal do sistema
-# Enquanto o usuário não escolher sair, o menu continuará aparecendo
-while True:
 
-    # Exibe o menu de opções
-    print('\n===== SISTEMA DE ESTOQUE =====')
-    print('1- Adicionar produto.')
-    print('2- Remover produto.')
-    print('3- Alterar quantidade.')
-    print('4- Consultar estoque.')
-    print('5- Sair.')
+def mostrar_menu():
+    print("\n===== SISTEMA DE ESTOQUE =====")
+    print("1- Adicionar produto.")
+    print("2- Remover produto.")
+    print("3- Alterar quantidade.")
+    print("4- Consultar estoque.")
+    print("5- Sair.")
 
-    # Recebe a opção escolhida pelo usuário
-    opção = input('Escolha uma opção:')
 
-    # ADICIONAR PRODUTO
-    if opção == '1':
+def adicionar_produto():
+    nome = input("Digite o nome do produto: ")
 
-        # Solicita o nome do produto
-        nome = input('Digite o nome do produto:')
-
-        try:
-
-            # Solicita a quantidade e converte para inteiro
-            quantidade = int(
-                input('Digite a quantidade do produto:')
-            )
-
-            # Impede que o usuário cadastre quantidades negativas
-            if quantidade < 0:
-                print('Quantidade inválida!')
-
-                # Volta para o início do menu
-                continue
-
-            # Cria um objeto Produto com os dados informados
-            produto = Produto(nome, quantidade)
-
-            # Adiciona o produto ao estoque
-            estoque.adicionar_produto(produto)
-
-            print('Produto adicionado com sucesso!')
-
-        # Executado caso o usuário digite letras ao invés de números
-        except ValueError:
-            print('Digite apenas números!')
-
-    # REMOVER PRODUTO
-    elif opção == '2':
-
-        # Solicita o nome do produto que será removido
-        nome = input('Digite o produto que deseja remover:')
-
-        # Tenta remover o produto do estoque
-        if estoque.remover_produto(nome):
-
-            # Executado se a remoção foi realizada com sucesso
-            print('Produto removido!')
-
-        else:
-
-            # Executado se o produto não existir
-            print('Produto não encontrado!')
-
-    # ALTERAR QUANTIDADE
-    elif opção == '3':
-
-        # Solicita o nome do produto que será alterado
-        nome = input(
-            'Digite o produto que deseja alterar a quantidade:'
+    try:
+        quantidade = int(
+            input("Digite a quantidade do produto: ")
         )
 
-        try:
+        if quantidade < 0:
+            print("Quantidade inválida!")
+            return
 
-            nova_quantidade = int(
-                input("Nova quantidade: ")
-            )
+        servico_produto.cadastrar(
+            estoque,
+            nome,
+            quantidade
+        )
 
-            # Impede quantidades negativas
-            if nova_quantidade < 0:
-                print("Quantidade inválida!")
-                continue
+        print("Produto adicionado com sucesso!")
 
-            if estoque.alterar_quantidade(
-                nome,
-                nova_quantidade
-            ):
+    except ValueError:
+        print("Digite apenas números!")
 
-                # Executado se o produto foi encontrado
-                print('Quantidade atualizada.')
 
-            else:
+def remover_produto():
+    nome = input(
+        "Digite o produto que deseja remover: "
+    )
 
-                # Executado se o produto não existir
-                print('Produto não encontrado!')
+    if servico_produto.remover(
+        estoque,
+        nome
+    ):
+        print("Produto removido!")
 
-        # Executado caso o usuário digite algo diferente de números
-        except ValueError:
-            print('Digite apenas números!')
+    else:
+        print("Produto não encontrado!")
 
-    # CONSULTAR ESTOQUE
-    elif opção == '4':
 
-        # Verifica se existem produtos cadastrados
-        if len(estoque.produtos) == 0:
+def alterar_quantidade():
+    nome = input(
+        "Digite o produto que deseja alterar a quantidade: "
+    )
 
-            print('Estoque vazio!')
+    try:
+        nova_quantidade = int(
+            input("Nova quantidade: ")
+        )
+
+        if nova_quantidade < 0:
+            print("Quantidade inválida!")
+            return
+
+        if servico_produto.alterar_quantidade(
+            estoque,
+            nome,
+            nova_quantidade
+        ):
+            print("Quantidade atualizada.")
+
+        else:
+            print("Produto não encontrado!")
+
+    except ValueError:
+        print("Digite apenas números!")
+
+
+def consultar_estoque():
+    produtos = servico_produto.listar(estoque)
+
+    if len(produtos) == 0:
+        print("Estoque vazio!")
+
+    else:
+        for produto in produtos:
+            print(produto)
+
+
+def main():
+
+    while True:
+
+        mostrar_menu()
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+
+            adicionar_produto()
+
+        elif opcao == "2":
+
+            remover_produto()
+
+        elif opcao == "3":
+
+            alterar_quantidade()
+
+        elif opcao == "4":
+
+            consultar_estoque()
+
+        elif opcao == "5":
+
+            print("Encerrando Sistema...")
+
+            break
 
         else:
 
-            # Percorre todos os produtos cadastrados
-            for produto in estoque.listar_produtos():
+            print("Opção inválida!")
 
-                # Exibe as informações de cada produto
-                print(produto)
 
-    # SAIR DO SISTEMA
-    elif opção == '5':
-
-        print('Encerrando Sistema...')
-
-        # Encerra o loop principal
-        break
-
-    # OPÇÃO INVÁLIDA
-    else:
-
-        # Executado quando o usuário digita uma opção inexistente
-        print('Opção inválida!')
+if __name__ == "__main__":
+    main()
